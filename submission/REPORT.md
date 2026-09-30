@@ -32,7 +32,7 @@ Giữ đúng ba output text và năm ảnh dưới đây. Không tách thêm ả
 | Prompt versions (v1, v2) | `evidence/09-prompt-versions.png` |
 | Prompt promote & rollback | `evidence/10a-promote.png`, `evidence/10b-rollback.png` |
 | Dashboard overview (6 panels) | `evidence/11-dashboard-overview.png` |
-| Incident metric (dashboard sau challenge) | `evidence/12-incident-metric.png` (hoặc `evidence/05-dashboard-incident.png`) |
+| Incident metric (dashboard sau challenge) | `evidence/12-incident-metric.png` |
 | Incident log (request bất thường) | `evidence/13-incident-log.png` |
 | Incident trace (Langfuse span bất thường) | `evidence/14-incident-trace.png` |
 
