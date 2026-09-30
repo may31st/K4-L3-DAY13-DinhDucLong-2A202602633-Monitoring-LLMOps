@@ -6,17 +6,17 @@ Danh sách chính thức, quy tắc chụp và cách nộp nằm tại [SUBMISSI
 
 Ba output text:
 
-- [ ] `pytest.txt`.
-- [ ] `log-validator.txt` đạt tối thiểu 80/100 và không phát hiện PII leak.
-- [ ] `dashboard-validator.txt` đạt 6/6.
+- [x] `pytest.txt`.
+- [x] `log-validator.txt` đạt tối thiểu 80/100 và không phát hiện PII leak.
+- [x] `dashboard-validator.txt` đạt 6/6.
 
 Đúng năm ảnh:
 
-- [ ] `01-incident-log.png`: structured log và incident log.
-- [ ] `02-trace-list.png`: project cá nhân và tối thiểu 10 traces.
-- [ ] `03-incident-trace.png`: waterfall, metadata và incident span.
-- [ ] `04-prompt-versioning.png`: v1/v2, labels, promote và rollback.
-- [ ] `05-dashboard-incident.png`: 6 panel và incident metric.
+- [x] `01-incident-log.png`: structured log và incident log.
+- [x] `02-trace-list.png`: project cá nhân và tối thiểu 10 traces.
+- [x] `03-incident-trace.png`: waterfall, metadata và incident span.
+- [x] `04-prompt-versioning.png`: v1/v2, labels, promote và rollback.
+- [x] `05-dashboard-incident.png`: 6 panel và incident metric.
 
 ## Artifact kiểm tra trực tiếp trên repo
 
