@@ -92,7 +92,7 @@ Một ảnh này chứng minh cả promote lên v2 và rollback về v1.
 
 ## Hoàn thành khi
 
-- [ ] `day13-chat` có v1 và v2, giữ đủ ba biến.
-- [ ] Report có trace ID của baseline v1 và candidate v2.
-- [ ] Đã chạy `production` v2 và rollback `production` về v1.
-- [ ] Có đúng một ảnh `04-prompt-versioning.png` đọc được đầy đủ thông tin.
+- [x] `day13-chat` có v1 và v2, giữ đủ ba biến.
+- [x] Report có trace ID của baseline v1 và candidate v2.
+- [x] Đã chạy `production` v2 và rollback `production` về v1.
+- [x] Có đúng một ảnh `04-prompt-versioning.png` đọc được đầy đủ thông tin.
