@@ -239,10 +239,10 @@ git status --short
 git log -1 --oneline
 ```
 
-- [ ] Không có `.env`, secret, `.venv/`, PII thô hoặc evidence của học viên/lớp khác.
-- [ ] Có đúng 3 output text và 5 ảnh runtime theo `docs/SUBMISSION.md`.
-- [ ] `submission/REPORT.md` đã đủ; mọi ảnh dùng đường dẫn tương đối và mở được.
-- [ ] Bạn demo và giải thích được luồng Metrics → Logs → Traces → Root cause.
+- [x] Không có `.env`, secret, `.venv/`, PII thô hoặc evidence của học viên/lớp khác.
+- [x] Có đúng 3 output text và 5 ảnh runtime theo `docs/SUBMISSION.md`.
+- [x] `submission/REPORT.md` đã đủ; mọi ảnh dùng đường dẫn tương đối và mở được.
+- [x] Bạn demo và giải thích được luồng Metrics → Logs → Traces → Root cause.
 
 ## Tên repo bài nộp
 
