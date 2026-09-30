@@ -51,7 +51,7 @@ Giữ đúng ba output text và năm ảnh dưới đây. Không tách thêm ả
 
 ## 4. Logging và PII
 
-- **Cách tạo/nhận và truyền correlation ID:** Trong [CorrelationIdMiddleware](file:///d:/ViAI/K4-L3-DAY13-DinhDucLong-2A202602633-Monitoring-LLMOps/app/middleware.py), gọi `clear_contextvars()` để xóa context cũ tránh rò rỉ giữa các request, nhận header `x-request-id` nếu client truyền lên hoặc tự động sinh theo định dạng `req-{uuid.uuid4().hex[:8]}`. Sau đó bind vào contextvars thông qua `bind_contextvars(correlation_id=...)`, lưu vào `request.state.correlation_id` và đính kèm vào response headers `x-request-id` cùng `x-response-time-ms`.
+- **Cách tạo/nhận và truyền correlation ID:** Trong [CorrelationIdMiddleware](../app/middleware.py), gọi `clear_contextvars()` để xóa context cũ tránh rò rỉ giữa các request, nhận header `x-request-id` nếu client truyền lên hoặc tự động sinh theo định dạng `req-{uuid.uuid4().hex[:8]}`. Sau đó bind vào contextvars thông qua `bind_contextvars(correlation_id=...)`, lưu vào `request.state.correlation_id` và đính kèm vào response headers `x-request-id` cùng `x-response-time-ms`.
 - **Các metadata được ghi vào structured log:** Gồm các trường hệ thống (`ts`, `level`, `service`, `event`), trường ngữ cảnh request (`correlation_id`, `user_id_hash`, `session_id`, `feature`, `model`, `env`), cùng các trường đo lường hiệu năng/chất lượng (`latency_ms`, `ttft_ms`, `tokens_in`, `tokens_out`, `cost_usd`, `quality_score`, `tool_name`, `tool_success`).
 - **Cách bảo đảm PII được scrub trước khi ghi:** Cấu hình processor `scrub_event` trong chuỗi structlog processors đặt trước `JsonlFileProcessor` và `JSONRenderer`. Hàm `scrub_event` duyệt qua `payload` và `event` để thay thế email, số điện thoại VN, số CCCD 12 số, số thẻ ngân hàng bằng nhãn `[REDACTED_*]` trước khi log được render thành JSON hoặc ghi xuống đĩa.
 - **Cách kiểm chứng kết quả:** Chạy bộ test `pytest tests/test_pii.py` (bổ sung test cho CCCD và thẻ tín dụng), chạy `python scripts/load_test.py` sinh workload thực tế và kiểm tra bằng `python scripts/validate_logs.py` đạt điểm tối đa 100/100 (0 PII leak, 0 missing required fields, 0 missing enrichment).
@@ -60,7 +60,7 @@ Giữ đúng ba output text và năm ảnh dưới đây. Không tách thêm ả
 
 ## 5. Tracing và prompt versioning
 
-- **Cách xác nhận traces do chính tôi tạo trong project cá nhân:** Trong file [.env](file:///d:/ViAI/K4-L3-DAY13-DinhDucLong-2A202602633-Monitoring-LLMOps/.env), cấu hình `LANGFUSE_PUBLIC_KEY` và `LANGFUSE_SECRET_KEY` được tạo trực tiếp từ project cá nhân `day13-k4-l3b-2A202602633` trên Langfuse Cloud. Mọi trace sinh ra đều chứa `user_id_hash`, `tags=["lab", feature, model]` và `metadata.correlation_id` khớp với log cục bộ.
+- **Cách xác nhận traces do chính tôi tạo trong project cá nhân:** Trong file `.env`, cấu hình `LANGFUSE_PUBLIC_KEY` và `LANGFUSE_SECRET_KEY` được tạo trực tiếp từ project cá nhân `day13-k4-l3b-2A202602633` trên Langfuse Cloud. Mọi trace sinh ra đều chứa `user_id_hash`, `tags=["lab", feature, model]` và `metadata.correlation_id` khớp với log cục bộ.
 - **Cấu trúc root/retrieval/generation observations:**
   - Root trace: `day13-agent-request` (thiết lập qua `propagate_attributes`).
   - Observation 1: `lab-agent-run` (loại `agent`, decorate trên `LabAgent.run`).
@@ -79,13 +79,13 @@ Giữ đúng ba output text và năm ảnh dưới đây. Không tách thêm ả
 
 ## 6. Dashboard, SLO và alerts
 
-- **Dashboard và sáu panel:** 6 panel được định nghĩa theo [config/dashboard.yaml](file:///d:/ViAI/K4-L3-DAY13-DinhDucLong-2A202602633-Monitoring-LLMOps/config/dashboard.yaml) gồm: Latency (P50/P95/P99, TTFT, ngưỡng 3000ms), Traffic (số lượng request theo thời gian), Errors (tỉ lệ lỗi HTTP 500 và tỉ lệ retrieval success), Cost (chi phí tích luỹ theo ngày so với giới hạn $2.5), Tokens (độ dài input/output token), và Quality (điểm chất lượng phản hồi heuristic trung bình >= 0.75).
-- **SLO và lý do chọn:** Primary SLO đặt trong [config/slo.yaml](file:///d:/ViAI/K4-L3-DAY13-DinhDucLong-2A202602633-Monitoring-LLMOps/config/slo.yaml) là `fast_successful_requests` với mục tiêu 99.5% request trong chu kỳ 28 ngày phải phản hồi thành công và có `latency_ms <= 3000ms`. Lý do: Ứng dụng hỗ trợ hỏi đáp trực tiếp (chatbot/QA) đòi hỏi phản hồi nhanh dưới 3s để người dùng không bỏ phiên, đồng thời việc trả lời lỗi (500) phá vỡ trải nghiệm dịch vụ.
+- **Dashboard và sáu panel:** 6 panel được định nghĩa theo [config/dashboard.yaml](../config/dashboard.yaml) gồm: Latency (P50/P95/P99, TTFT, ngưỡng 3000ms), Traffic (số lượng request theo thời gian), Errors (tỉ lệ lỗi HTTP 500 và tỉ lệ retrieval success), Cost (chi phí tích luỹ theo ngày so với giới hạn $2.5), Tokens (độ dài input/output token), và Quality (điểm chất lượng phản hồi heuristic trung bình >= 0.75).
+- **SLO và lý do chọn:** Primary SLO đặt trong [config/slo.yaml](../config/slo.yaml) là `fast_successful_requests` với mục tiêu 99.5% request trong chu kỳ 28 ngày phải phản hồi thành công và có `latency_ms <= 3000ms`. Lý do: Ứng dụng hỗ trợ hỏi đáp trực tiếp (chatbot/QA) đòi hỏi phản hồi nhanh dưới 3s để người dùng không bỏ phiên, đồng thời việc trả lời lỗi (500) phá vỡ trải nghiệm dịch vụ.
 - **Cách tính error budget:** Với target SLO 99.5%, error budget là $100\% - 99.5\% = 0.5\%$. Trong khoảng thời gian 28 ngày, nếu hệ thống phục vụ tổng cộng 10,000 requests thì ngân sách lỗi cho phép tối đa $10,000 \times 0.5\% = 50$ requests bị chậm quá 3s hoặc gặp lỗi.
-- **Ba alert và runbook tương ứng:** Định nghĩa trong [config/alert_rules.yaml](file:///d:/ViAI/K4-L3-DAY13-DinhDucLong-2A202602633-Monitoring-LLMOps/config/alert_rules.yaml) và tài liệu hóa tại [docs/alerts.md](file:///d:/ViAI/K4-L3-DAY13-DinhDucLong-2A202602633-Monitoring-LLMOps/docs/alerts.md):
-  1. `HighLatencyP95` (Warning, 5m): `p95(latency_ms) > 3000ms` trỏ tới [docs/alerts.md#alert-1](file:///d:/ViAI/K4-L3-DAY13-DinhDucLong-2A202602633-Monitoring-LLMOps/docs/alerts.md#alert-1).
-  2. `HighErrorRate` (Critical, 3m): `error_rate > 2%` hoặc `retrieval_success_rate < 90%` trỏ tới [docs/alerts.md#alert-2](file:///d:/ViAI/K4-L3-DAY13-DinhDucLong-2A202602633-Monitoring-LLMOps/docs/alerts.md#alert-2).
-  3. `CostBurnSpike` (Warning, 5m): `daily_cost_usd > 2.5` trỏ tới [docs/alerts.md#alert-3](file:///d:/ViAI/K4-L3-DAY13-DinhDucLong-2A202602633-Monitoring-LLMOps/docs/alerts.md#alert-3).
+- **Ba alert và runbook tương ứng:** Định nghĩa trong [config/alert_rules.yaml](../config/alert_rules.yaml) và tài liệu hóa tại [docs/alerts.md](../docs/alerts.md):
+  1. `HighLatencyP95` (Warning, 5m): `p95(latency_ms) > 3000ms` trỏ tới [docs/alerts.md#alert-1](../docs/alerts.md#alert-1).
+  2. `HighErrorRate` (Critical, 3m): `error_rate > 2%` hoặc `retrieval_success_rate < 90%` trỏ tới [docs/alerts.md#alert-2](../docs/alerts.md#alert-2).
+  3. `CostBurnSpike` (Warning, 5m): `daily_cost_usd > 2.5` trỏ tới [docs/alerts.md#alert-3](../docs/alerts.md#alert-3).
 
 > Ví dụ cách viết error budget: "SLO 99.5% trong 28 ngày nghĩa là error budget 0.5%. Nếu workload có 10,000 request thì tối đa 50 request được phép lỗi hoặc chậm hơn ngưỡng SLO."
 
